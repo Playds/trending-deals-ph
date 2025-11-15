@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Viral Deals PH – Product Store (Upload Images Version)</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; background: #f5f5f5; }
+    header { background: #1a73e8; padding: 20px; color: #fff; text-align: center; font-size: 24px; font-weight: bold; }
+    .container { width: 95%; max-width: 1100px; margin: 20px auto; }
+    .add-product-box { background: #fff; padding: 16px; border-radius: 10px; margin-bottom: 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); }
+    input, textarea { width: 100%; padding: 10px; margin: 8px 0; border-radius: 6px; border: 1px solid #ccc; box-sizing: border-box; }
+    .fileBox { margin: 10px 0; }
+    button { background: #1a73e8; color: white; padding: 12px 20px; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; }
+    .product-list { display: grid; grid-template-columns: repeat(auto-fill,minmax(260px,1fr)); gap: 18px; }
+    .product { background: #fff; padding: 12px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.06); text-align: center; }
+    .product .images { display: grid; grid-template-columns: 1fr; gap: 8px; }
+    .product img { width: 100%; border-radius: 8px; display: block; }
+    .product a { display: block; margin-top: 10px; padding: 10px; background: #1a73e8; color: white; border-radius: 6px; text-decoration: none; }
+    @media (min-width:600px){ .product .images { grid-template-columns: 1fr 1fr; } }
+  </style>
+</head>
+<body>
+  <header>Viral Deals PH – Product Store (Upload Images)</header>
+
+  <div class="container">
+    <div class="add-product-box">
+      <h2>Add Product</h2>
+
+      <input id="name" placeholder="Product Name (required)" />
+
+      <div class="fileBox">
+        <label>Select Multiple Photos (required)</label><br>
+        <input id="photos" type="file" accept="image/*" multiple />
+      </div>
+
+      <input id="price" placeholder="Price (required)" />
+
+      <input id="link" placeholder="Affiliate Link (required)" />
+      <textarea id="desc" placeholder="Short Description (optional)"></textarea>
+
+      <button id="addBtn">Add Product</button>
+    </div>
+
+    <div class="product-list" id="list"></div>
+  </div>
+
+  <script>
+    function addProductFromFields() {
+      try {
+        const name = document.getElementById('name').value.trim();
+        const link = document.getElementById('price').value = '';
+        document.getElementById('link'.value.trim();
+        const price = document.getElementById('price').value.trim();
+        const desc = document.getElementById('desc').value.trim();.value.trim();
+        const files = document.getElementById('photos').files;
+
+        if (!name || !price || !link || files.length === 0) {
+          alert('Name, price, photos, and link are required' ));
+          return;
+        }
+
+        const imageURLs = [];
+        for (let i = 0; i < files.length; i++) {
+          imageURLs.push(URL.createObjectURL(files[i]));
+        }
+
+        addProductToList({ name, price, link, desc, images: imageURLs });
+
+        document.getElementById('name').value = '';
+        document.getElementById('photos').value = '';
+        document.getElementById('link').value = '';
+        document.getElementById('desc').value = '';
+
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    function addProductToList({ name, price, link, desc, images }){
+      const list = document.getElementById('list');
+      const card = document.createElement('div');
+      card.className = 'product';
+
+      const imgHTML = images.map(url => `<img src="${url}">`).join('');
+
+      card.innerHTML = `
+        <div class="images">${imgHTML}</div>
+        <h3>${name}</h3>
+        <h2 style="color:#e63946;font-weight:bold;">₱${price}</h2>
+        <p>${desc}</p>
+        <a href="${link}" target="_blank">Buy Now</a>
+      `;
+
+      list.appendChild(card);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('addBtn').addEventListener('click', addProductFromFields);
+    });
+  </script>
+</body>
+</html>
