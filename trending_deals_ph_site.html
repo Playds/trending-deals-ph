@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trending Deals PH</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #ffe6f2; color: #333; }
+    header { background: #ff66b3; padding: 20px; text-align: center; color: white; font-size: 26px; font-weight: bold; }
+    .container { padding: 15px; }
+    .product-card { background: white; padding: 15px; margin-bottom: 20px; border-radius: 12px; box-shadow: 0 3px 6px rgba(0,0,0,0.1); }
+    .photos img { width: 100%; margin-bottom: 10px; border-radius: 10px; }
+    button { background: #ff66b3; color: white; border: none; padding: 10px 14px; border-radius: 8px; cursor: pointer; }
+    #adminPanel { margin-top: 20px; background: white; padding: 15px; border-radius: 12px; display: none; }
+    input, textarea { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #ccc; }
+  </style>
+</head>
+<body>
+<header>Trending Deals PH</header>
+<div class="container">
+  <button onclick="toggleAdmin()">Admin Panel</button>
+
+  <div id="adminPanel">
+    <h2>Add Product</h2>
+    <input id="name" placeholder="Product Name" />
+    <input id="price" placeholder="Price" />
+    <input id="category" placeholder="Category" />
+    <input id="link" placeholder="Affiliate Link" />
+    <textarea id="photos" placeholder="Paste multiple photo URLs (one per line)"></textarea>
+    <button onclick="addProduct()">Add Product</button>
+  </div>
+
+  <h2>Products</h2>
+  <div id="productList"></div>
+</div>
+
+<script>
+let products = JSON.parse(localStorage.getItem("products")) || [];
+
+function toggleAdmin(){
+  const panel = document.getElementById("adminPanel");
+  panel.style.display = panel.style.display === "block" ? "none" : "block";
+}
+
+function addProduct(){
+  const name = document.getElementById("name").value;
+  const price = document.getElementById("price").value;
+  const category = document.getElementById("category").value;
+  const link = document.getElementById("link").value;
+  const photos = document.getElementById("photos").value.split("\n");
+
+  let product = { name, price, category, link, photos };
+  products.push(product);
+  localStorage.setItem("products", JSON.stringify(products));
+
+  renderProducts();
+}
+
+function deleteProduct(index){
+  products.splice(index, 1);
+  localStorage.setItem("products", JSON.stringify(products));
+  renderProducts();
+}
+
+function renderProducts(){
+  let html = "";
+  products.forEach((p, i) => {
+    html += `
+      <div class='product-card'>
+        <h3>${p.name}</h3>
+        <p><b>Price:</b> ${p.price}</p>
+        <p><b>Category:</b> ${p.category}</p>
+        <div class='photos'>
+          ${p.photos.map(photo => `<img src='${photo}' />`).join('')}
+        </div>
+        <a href='${p.link}' target='_blank'><button>Buy Now</button></a>
+        <button onclick='deleteProduct(${i})' style='background:red;margin-left:10px;'>Delete</button>
+      </div>
+    `;
+  });
+  document.getElementById("productList").innerHTML = html;
+}
+
+renderProducts();
+</script>
+
+</body>
+</html>
